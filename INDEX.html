@@ -1,0 +1,1448 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101b32">
+<meta name="description" content="Which Block Is 34? Smart landmark-based campus navigation for Lovely Professional University.">
+<title>Which Block Is 34? | LPU Smart Navigation</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<style>
+:root {
+ --navy:#101b32;
+ --navy2:#182944;
+ --orange:#ff7a32;
+ --blue:#315eea;
+ --light:#f5f7fb;
+ --muted:#78869b;
+ --green:#17a673;
+ --white:#fff;
+ --border:#e8edf4;
+}
+* {margin:0;padding:0;box-sizing:border-box}
+html {scroll-behavior:smooth;scroll-padding-top:85px}
+body {
+ font-family:Inter,Arial,sans-serif;
+ background:var(--light);
+ color:var(--navy);
+ overflow-x:hidden;
+}
+button,input,textarea {font:inherit}
+button {cursor:pointer}
+a {text-decoration:none;color:inherit}
+img {display:block;max-width:100%}
+
+/* NAVIGATION */
+
+header {
+ height:76px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:0 6%;
+ background:#fff;
+ position:sticky;
+ top:0;
+ z-index:1000;
+ border-bottom:1px solid var(--border);
+}
+.brand {display:flex;align-items:center;gap:12px}
+.brand-icon {
+ height:44px;width:44px;
+ display:grid;place-items:center;
+ background:var(--navy);
+ color:white;border-radius:13px;
+ font-size:25px;
+}
+.brand-name {font-size:16px;font-weight:900;letter-spacing:-.6px}
+.brand-name small {
+ display:block;font-size:9px;
+ color:var(--muted);letter-spacing:2px;
+ margin-top:4px;
+}
+nav {display:flex;align-items:center;gap:24px}
+nav a {font-size:12px;font-weight:700;color:#5d6a7e}
+nav a:hover {color:var(--orange)}
+.nav-cta {
+ padding:12px 18px;background:var(--navy);
+ color:white;border-radius:9px;
+}
+.menu-btn {
+ display:none;border:0;background:#f1f4fa;
+ border-radius:9px;padding:10px;font-size:22px;
+}
+
+/* HERO */
+
+.hero {
+ min-height:590px;
+ background:var(--navy);
+ position:relative;
+ display:flex;align-items:center;
+ overflow:hidden;
+}
+.hero-bg {
+ position:absolute;inset:0;
+ background:
+ linear-gradient(90deg,rgba(8,18,36,.97) 0%,rgba(8,18,36,.83) 45%,rgba(8,18,36,.3) 100%),
+ url("https://image-static.collegedunia.com/public/dashboard_upload/1770043136_EntranceGate_.jpg") center/cover;
+ transform:scale(1.02);
+}
+.hero-content {
+ position:relative;z-index:2;
+ width:min(1200px,88%);
+ margin:auto;padding:85px 0;
+ color:white;
+}
+.eyebrow {
+ display:inline-flex;align-items:center;gap:9px;
+ padding:9px 14px;
+ border:1px solid #ffffff40;
+ background:#ffffff12;
+ border-radius:30px;
+ font-size:10px;font-weight:800;
+ letter-spacing:1.5px;
+}
+.live-dot {
+ height:8px;width:8px;border-radius:50%;
+ background:#45e0a0;
+ box-shadow:0 0 12px #45e0a0;
+}
+.hero h1 {
+ font-size:clamp(43px,7vw,78px);
+ font-weight:900;line-height:1.05;
+ letter-spacing:-3px;
+ max-width:800px;
+ margin:27px 0 20px;
+}
+.hero h1 span {color:var(--orange)}
+.hero p {
+ max-width:600px;
+ font-size:15px;line-height:1.9;
+ color:#d0d9e9;
+}
+.hero-buttons {display:flex;gap:13px;flex-wrap:wrap;margin-top:32px}
+.btn {
+ padding:14px 20px;border:0;border-radius:10px;
+ font-size:12px;font-weight:800;
+ transition:.2s;
+ display:inline-flex;align-items:center;
+ justify-content:center;gap:9px;
+}
+.btn:hover {transform:translateY(-2px);filter:brightness(1.06)}
+.orange {background:var(--orange);color:white}
+.white {background:white;color:var(--navy)}
+.dark {background:var(--navy);color:white}
+.outline {border:1px solid #ffffff80;color:white;background:transparent}
+.blue {background:var(--blue);color:white}
+.soft {background:#edf2ff;color:var(--blue)}
+.full {width:100%}
+
+/* STATS */
+
+.container {width:min(1160px,90%);margin:auto}
+.stats {
+ display:grid;grid-template-columns:repeat(3,1fr);
+ gap:16px;position:relative;
+ margin-top:-45px;z-index:5;
+}
+.stat {
+ background:white;border:1px solid var(--border);
+ padding:23px;border-radius:15px;
+ box-shadow:0 10px 35px #0d1b3210;
+}
+.stat span {font-size:23px}
+.stat h3 {font-size:20px;margin:10px 0 5px}
+.stat p {font-size:11px;color:var(--muted)}
+
+/* SECTIONS */
+
+.section {padding:78px 0}
+.section-head {margin-bottom:28px}
+.section-head small {
+ font-size:10px;color:var(--orange);
+ font-weight:900;letter-spacing:2px;
+}
+.section-head h2 {
+ font-size:clamp(26px,4vw,39px);
+ letter-spacing:-1.5px;margin:10px 0;
+}
+.section-head p {
+ font-size:13px;color:var(--muted);
+ line-height:1.8;max-width:650px;
+}
+.panel {
+ background:white;border:1px solid var(--border);
+ border-radius:18px;padding:25px;
+ box-shadow:0 8px 30px #0d1b3208;
+ min-width:0;
+}
+.panel-head {
+ display:flex;justify-content:space-between;
+ align-items:center;gap:12px;margin-bottom:20px;
+}
+.panel-head h3 {font-size:16px}
+.pill {
+ padding:7px 11px;border-radius:30px;
+ background:#edf2ff;color:var(--blue);
+ font-size:9px;font-weight:900;
+}
+
+/* GPS */
+
+.two-grid {
+ display:grid;grid-template-columns:.9fr 1.1fr;gap:20px;
+}
+.status {
+ background:#f2f6ff;padding:14px;
+ border-radius:11px;display:flex;gap:12px;
+ align-items:center;margin-bottom:17px;
+}
+.dot {
+ width:10px;height:10px;border-radius:50%;
+ background:#e6a23c;flex-shrink:0;
+}
+.dot.active {background:var(--green)}
+.status strong {font-size:12px}
+.status small {display:block;color:var(--muted);font-size:10px;margin-top:5px}
+.data-grid {
+ display:grid;grid-template-columns:1fr 1fr;
+ gap:10px;margin:18px 0;
+}
+.data {
+ background:#f7f9fc;padding:14px;border-radius:10px;
+ min-width:0;
+}
+.data small {font-size:9px;color:var(--muted);font-weight:700}
+.data strong {
+ display:block;font-size:13px;margin-top:7px;
+ overflow-wrap:anywhere;
+}
+.map-wrap {height:405px;border-radius:13px;overflow:hidden}
+#map {height:100%;width:100%;z-index:1}
+.note {font-size:10px;color:var(--muted);line-height:1.7;margin-top:12px}
+.button-stack {display:grid;gap:9px}
+
+/* ROUTE */
+
+.route-grid {
+ display:grid;grid-template-columns:.85fr 1.15fr;
+ gap:20px;
+}
+.destination {
+ border-radius:18px;padding:28px;color:white;
+ background:linear-gradient(145deg,#101b32,#294d91);
+ position:relative;overflow:hidden;
+}
+.destination:after {
+ content:"34";position:absolute;
+ right:-3px;top:20px;
+ font-size:130px;font-weight:900;
+ color:#ffffff0b;
+}
+.destination small {font-size:10px;letter-spacing:2px;color:#b6c9e9}
+.destination h3 {font-size:27px;margin:17px 0 10px}
+.destination p {font-size:12px;color:#d3def0;line-height:1.8}
+.progress-track {
+ height:7px;border-radius:20px;
+ background:#ffffff35;margin:24px 0 10px;
+ overflow:hidden;
+}
+.progress-fill {
+ width:0;height:100%;
+ background:var(--orange);
+ transition:.3s;
+}
+.progress-text {font-size:10px;color:#d8e2f4}
+.step-panel {
+ background:white;border:1px solid var(--border);
+ padding:26px;border-radius:18px;
+}
+.step-label {
+ font-size:10px;color:var(--orange);
+ font-weight:900;letter-spacing:1.5px;
+}
+.step-panel h3 {font-size:25px;margin:15px 0 10px}
+.step-panel p {font-size:13px;color:var(--muted);line-height:1.8}
+.step-tip {
+ padding:14px;background:#fff6ed;
+ border-radius:10px;color:#965c2a;
+ font-size:11px;line-height:1.7;margin-top:18px;
+}
+.step-controls {display:flex;gap:10px;margin-top:20px}
+.step-controls button {flex:1}
+
+/* CAMPUS GALLERY */
+
+.gallery {
+ display:grid;
+ grid-template-columns:1.35fr 1fr 1fr;
+ grid-template-rows:220px 220px;
+ gap:13px;
+}
+.photo {
+ position:relative;overflow:hidden;
+ border-radius:15px;background:#dfe6f0;
+}
+.photo:first-child {grid-row:span 2}
+.photo img {
+ width:100%;height:100%;object-fit:cover;
+ transition:.5s;
+}
+.photo:hover img {transform:scale(1.06)}
+.photo:after {
+ content:"";position:absolute;inset:35% 0 0;
+ background:linear-gradient(transparent,#09162de0);
+}
+.photo-caption {
+ position:absolute;bottom:18px;left:18px;
+ z-index:2;color:white;
+}
+.photo-caption small {font-size:9px;letter-spacing:1.5px}
+.photo-caption h3 {font-size:16px;margin-top:6px}
+
+/* LANDMARKS */
+
+.landmarks {
+ display:grid;grid-template-columns:repeat(3,1fr);
+ gap:17px;
+}
+.landmark {
+ background:white;border:1px solid var(--border);
+ border-radius:15px;overflow:hidden;
+}
+.landmark img {
+ width:100%;height:185px;object-fit:cover;
+}
+.landmark-body {padding:18px}
+.landmark-body small {font-size:9px;color:var(--orange);font-weight:900}
+.landmark-body h3 {font-size:15px;margin:9px 0}
+.landmark-body p {font-size:11px;color:var(--muted);line-height:1.8}
+
+/* QR + HELP */
+
+.qr-grid {
+ display:grid;grid-template-columns:1fr 1fr;gap:20px;
+}
+.qr-box {
+ text-align:center;
+ background:#f6f8fc;border-radius:14px;
+ padding:20px;
+}
+#qrcode {
+ display:flex;justify-content:center;
+ margin:15px auto;
+ min-height:170px;align-items:center;
+}
+#qrcode img {margin:auto}
+.help-grid {
+ display:grid;grid-template-columns:repeat(3,1fr);
+ gap:15px;
+}
+.help-card {
+ background:white;border:1px solid var(--border);
+ border-radius:15px;padding:21px;
+}
+.help-card .emoji {font-size:25px}
+.help-card h3 {font-size:14px;margin:12px 0 7px}
+.help-card p {font-size:11px;line-height:1.8;color:var(--muted)}
+
+/* FEEDBACK */
+
+.feedback-grid {
+ display:grid;grid-template-columns:1fr 1fr;gap:20px;
+}
+.form-group {margin-bottom:15px}
+.form-group label {
+ display:block;font-size:11px;font-weight:800;margin-bottom:8px;
+}
+.form-group input,.form-group textarea {
+ width:100%;padding:13px;border:1px solid var(--border);
+ border-radius:9px;background:#fafbfd;
+ outline:none;font-size:12px;
+}
+.form-group textarea {min-height:110px;resize:vertical}
+.form-group input:focus,.form-group textarea:focus {
+ border-color:var(--blue);
+}
+.rating {display:flex;gap:9px;margin:10px 0 18px}
+.rating button {
+ border:1px solid var(--border);background:white;
+ border-radius:8px;padding:10px 13px;font-size:18px;
+}
+.rating button.selected {background:#fff0df;border-color:var(--orange)}
+.offline {
+ background:#edf2ff;border-radius:16px;padding:24px;
+}
+.offline h3 {font-size:17px;margin-bottom:12px}
+.offline ol {padding-left:20px}
+.offline li {font-size:12px;line-height:2.1;color:#53617b}
+
+/* FOOTER */
+
+footer {
+ background:#101b32;color:white;
+ padding:50px 6% 25px;
+}
+.footer-grid {
+ display:grid;grid-template-columns:1.3fr 1fr 1fr;
+ gap:35px;
+}
+footer h3 {font-size:17px;margin-bottom:13px}
+footer p,footer a {
+ font-size:11px;color:#afbed5;line-height:2;
+}
+footer a:hover {color:var(--orange)}
+.footer-bottom {
+ border-top:1px solid #ffffff20;
+ margin-top:35px;padding-top:20px;
+ display:flex;justify-content:space-between;
+ gap:15px;flex-wrap:wrap;
+ font-size:10px;color:#9eacc2;
+}
+.toast {
+ position:fixed;z-index:5000;bottom:25px;left:50%;
+ transform:translate(-50%,100px);
+ padding:14px 20px;background:var(--navy);
+ color:white;border-radius:11px;font-size:12px;
+ box-shadow:0 10px 30px #0003;
+ transition:.3s;max-width:90%;text-align:center;
+}
+.toast.show {transform:translate(-50%,0)}
+.reveal {
+ opacity:0;transform:translateY(22px);
+ transition:.7s;
+}
+.reveal.visible {opacity:1;transform:translateY(0)}
+
+@media(max-width:850px) {
+ nav {
+  display:none;position:absolute;top:76px;left:0;right:0;
+  background:white;padding:20px;
+  flex-direction:column;align-items:stretch;
+  box-shadow:0 10px 20px #0001;
+ }
+ nav.open {display:flex}
+ .menu-btn {display:block}
+ .two-grid,.route-grid,.qr-grid,.feedback-grid {grid-template-columns:1fr}
+ .gallery {grid-template-columns:1fr 1fr;grid-template-rows:210px 170px 170px}
+ .photo:first-child {grid-row:span 2}
+ .landmarks,.help-grid {grid-template-columns:1fr 1fr}
+ .footer-grid {grid-template-columns:1fr 1fr}
+}
+@media(max-width:520px) {
+ .hero {min-height:570px}
+ .hero h1 {letter-spacing:-2px}
+ .stats {grid-template-columns:1fr}
+ .stat {padding:17px}
+ .section {padding:52px 0}
+ .gallery {grid-template-columns:1fr;grid-template-rows:230px 190px 190px 190px 190px}
+ .photo:first-child {grid-row:auto}
+ .landmarks,.help-grid {grid-template-columns:1fr}
+ .footer-grid {grid-template-columns:1fr}
+ .step-controls {flex-direction:column}
+ .map-wrap {height:320px}
+}
+@media(prefers-reduced-motion:reduce) {
+ *,*:before,*:after {scroll-behavior:auto!important;transition:none!important}
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<header>
+ <a href="#home" class="brand">
+  <div class="brand-icon">⌖</div>
+  <div class="brand-name">
+   WHICH BLOCK IS 34?
+   <small>LPU SMART NAVIGATION</small>
+  </div>
+ </a>
+
+ <nav id="nav">
+  <a href="#home">Home</a>
+  <a href="#location">Live GPS</a>
+  <a href="#route">Navigation</a>
+  <a href="#gallery">Gallery</a>
+  <a href="#help">Help</a>
+  <a href="#location" class="nav-cta">Find Block 34 ↗</a>
+ </nav>
+
+ <button class="menu-btn" onclick="toggleMenu()" aria-label="Open menu">☰</button>
+</header>
+
+<!-- HERO -->
+
+<section class="hero" id="home">
+ <div class="hero-bg"></div>
+ <div class="hero-content">
+  <div class="eyebrow">
+   <span class="live-dot"></span>
+   INT335 DESIGN THINKING · PROJECT P10
+  </div>
+
+  <h1>Every turn has a clue.<br>
+   <span>Find Block 34.</span>
+  </h1>
+
+  <p>
+   New to Lovely Professional University?
+   Don't get lost in the campus. Discover your destination
+   through live GPS, interactive maps and landmark-based
+   visual navigation.
+  </p>
+
+  <div class="hero-buttons">
+   <button class="btn orange" onclick="startNavigation()">
+    📍 START NAVIGATION →
+   </button>
+   <a href="#gallery" class="btn outline">Explore LPU Campus ↗</a>
+  </div>
+ </div>
+</section>
+
+<main class="container">
+
+<!-- STATS -->
+
+<div class="stats reveal">
+ <div class="stat">
+  <span>📍</span>
+  <h3>Live GPS</h3>
+  <p>Find your current location with permission.</p>
+ </div>
+ <div class="stat">
+  <span>🧭</span>
+  <h3>Smart Wayfinding</h3>
+  <p>Simple landmark-led directions, one step at a time.</p>
+ </div>
+ <div class="stat">
+  <span>🏫</span>
+  <h3>Block 34</h3>
+  <p>Your selected LPU destination.</p>
+ </div>
+</div>
+
+<!-- LIVE GPS -->
+
+<section class="section reveal" id="location">
+ <div class="section-head">
+  <small>01 / LIVE LOCATION</small>
+  <h2>Your Location. Your Direction.</h2>
+  <p>Allow GPS access to locate yourself on the interactive campus map and calculate your straight-line distance to Block 34.</p>
+ </div>
+
+ <div class="two-grid">
+  <div class="panel">
+   <div class="panel-head">
+    <h3>📡 GPS Dashboard</h3>
+    <span class="pill">LIVE SYSTEM</span>
+   </div>
+
+   <div class="status">
+    <span class="dot" id="gpsDot"></span>
+    <div>
+     <strong id="gpsStatus">GPS not activated</strong>
+     <small id="gpsMessage">Allow location access to begin.</small>
+    </div>
+   </div>
+
+   <div class="data-grid">
+    <div class="data">
+     <small>LATITUDE</small>
+     <strong id="lat">--</strong>
+    </div>
+    <div class="data">
+     <small>LONGITUDE</small>
+     <strong id="lng">--</strong>
+    </div>
+    <div class="data">
+     <small>GPS ACCURACY</small>
+     <strong id="accuracy">--</strong>
+    </div>
+    <div class="data">
+     <small>TO BLOCK 34</small>
+     <strong id="distance">--</strong>
+    </div>
+   </div>
+
+   <div class="button-stack">
+    <button class="btn blue full" onclick="startLiveTracking()">📍 Enable Live Tracking</button>
+    <button class="btn dark full" onclick="getSingleLocation()">Detect Once</button>
+    <button class="btn soft full" onclick="stopTracking()">Stop Tracking</button>
+    <button class="btn soft full" onclick="copyLocation()">Copy Coordinates</button>
+   </div>
+
+   <p class="note">
+    Your location is used in this browser to show your position and calculate distance. This prototype does not upload GPS coordinates to a server.
+   </p>
+  </div>
+
+  <div class="panel">
+   <div class="panel-head">
+    <h3>🗺️ Interactive Map</h3>
+    <span class="pill">OPEN STREET MAP</span>
+   </div>
+   <div class="map-wrap">
+    <div id="map"></div>
+   </div>
+   <p class="note">
+    🔵 Blue marker: your current GPS location.
+    🟠 Orange marker: configured Block 34 destination.
+    The straight-line distance is not the walking route distance.
+   </p>
+   <button class="btn soft full" style="margin-top:12px" onclick="openGoogleMaps()">Open Walking Directions ↗</button>
+  </div>
+ </div>
+</section>
+
+<!-- NAVIGATION -->
+
+<section class="section reveal" id="route">
+ <div class="section-head">
+  <small>02 / SMART NAVIGATION</small>
+  <h2>Your Journey to Block 34</h2>
+  <p>Follow the route guide in sequence. Exact internal campus turns must be confirmed using your team's actual route survey.</p>
+ </div>
+
+ <div class="route-grid">
+  <div class="destination">
+   <small>YOUR SELECTED DESTINATION</small>
+   <h3>🏫 Block 34</h3>
+   <p>
+    Lovely Professional University<br>
+    Phagwara, Punjab, India
+   </p>
+
+   <div class="progress-track">
+    <div class="progress-fill" id="progressFill"></div>
+   </div>
+   <div class="progress-text" id="progressText">0% journey guide completed</div>
+
+   <button class="btn orange full" style="margin-top:23px" onclick="openGoogleMaps()">
+    Open Google Maps ↗
+   </button>
+  </div>
+
+  <div class="step-panel">
+   <div class="step-label" id="stepLabel">STEP 1 OF 4</div>
+   <h3 id="stepTitle">Start at the Main Gate</h3>
+   <p id="stepDescription">
+    Confirm that you are at the LPU Main Gate before starting your journey.
+   </p>
+   <div class="step-tip" id="stepTip">
+    💡 Check your current GPS position before beginning.
+   </div>
+   <div class="step-controls">
+    <button class="btn soft" onclick="previousStep()">← Previous</button>
+    <button class="btn blue" onclick="nextStep()">Next Step →</button>
+   </div>
+   <button class="btn dark full" style="margin-top:12px" onclick="resetRoute()">↻ Restart Journey</button>
+  </div>
+ </div>
+
+ <div class="offline" style="margin-top:20px">
+  <h3>📄 Printed / Offline Route Card</h3>
+  <ol>
+   <li>Start from the LPU Main Gate.</li>
+   <li>Walk straight past the first verified landmark.</li>
+   <li>Follow the verified direction at the next junction.</li>
+   <li>Approach Block 34 and confirm its entrance sign.</li>
+  </ol>
+  <button class="btn blue" style="margin-top:16px" onclick="window.print()">🖨️ Print Route Card</button>
+ </div>
+</section>
+
+<!-- LPU GALLERY -->
+
+<section class="section reveal" id="gallery">
+ <div class="section-head">
+  <small>03 / CAMPUS EXPERIENCE</small>
+  <h2>Discover Lovely Professional University</h2>
+  <p>A visual glimpse of LPU's entrance, academic architecture, library and campus environment.</p>
+ </div>
+
+ <div class="gallery">
+  <div class="photo">
+   <img src="https://image-static.collegedunia.com/public/dashboard_upload/1770043136_EntranceGate_.jpg" alt="Lovely Professional University Main Entrance" loading="lazy">
+   <div class="photo-caption">
+    <small>WELCOME TO LPU</small>
+    <h3>University Main Entrance</h3>
+   </div>
+  </div>
+
+  <div class="photo">
+   <img src="https://image-static.collegedunia.com/public/dashboard_upload/1770043129_MainBuilding.jpg" alt="LPU main academic building" loading="lazy">
+   <div class="photo-caption">
+    <small>ARCHITECTURE</small>
+    <h3>Academic Building</h3>
+   </div>
+  </div>
+
+  <div class="photo">
+   <img src="https://image-static.collegedunia.com/public/dashboard_upload/1770043135_InsideLibrary.jpg" alt="LPU library interior" loading="lazy">
+   <div class="photo-caption">
+    <small>LEARNING SPACE</small>
+    <h3>University Library</h3>
+   </div>
+  </div>
+
+  <div class="photo">
+   <img src="https://image-static.collegedunia.com/public/dashboard_upload/1770043129_LawDepartment.jpg" alt="LPU School of Law building" loading="lazy">
+   <div class="photo-caption">
+    <small>CAMPUS LANDMARK</small>
+    <h3>School of Law</h3>
+   </div>
+  </div>
+
+  <div class="photo">
+   <img src="https://image-static.collegedunia.com/public/dashboard_upload/1770043142_GardenArea.jpg" alt="LPU landscaped garden" loading="lazy">
+   <div class="photo-caption">
+    <small>CAMPUS LIFE</small>
+    <h3>Green Campus Area</h3>
+   </div>
+  </div>
+ </div>
+ <p class="note">Campus gallery images are illustrative campus photographs, not verified navigation landmarks for the Block 34 route. Image source: <a href="https://collegedunia.com/university/25787-lovely-professional-university-lpu-jalandhar/gallery" target="_blank" rel="noopener" style="color:#315eea">LPU photo gallery</a>.</p>
+</section>
+
+<!-- LANDMARK GUIDE -->
+
+<section class="section reveal" id="landmarks">
+ <div class="section-head">
+  <small>04 / VISUAL WAYFINDING</small>
+  <h2>Recognise. Navigate. Arrive.</h2>
+  <p>Replace these reference images with your team's real, dated junction and entrance photographs.</p>
+ </div>
+
+ <div class="landmarks">
+  <div class="landmark">
+   <img src="https://image-static.collegedunia.com/public/dashboard_upload/1770043136_EntranceGate_.jpg" alt="LPU Main Gate" loading="lazy">
+   <div class="landmark-body">
+    <small>STARTING POINT</small>
+    <h3>01. LPU Main Gate</h3>
+    <p>Confirm your starting point before following the internal campus route.</p>
+   </div>
+  </div>
+
+  <div class="landmark">
+   <img src="https://image-static.collegedunia.com/public/dashboard_upload/1770043129_MainBuilding.jpg" alt="Campus building reference" loading="lazy">
+   <div class="landmark-body">
+    <small>REFERENCE IMAGE ONLY</small>
+    <h3>02. Internal Junction</h3>
+    <p>Upload the actual junction photo and add the verified left or right turn arrow here.</p>
+   </div>
+  </div>
+
+  <div class="landmark">
+   <img src="https://image-static.collegedunia.com/public/dashboard_upload/1770043129_LawDepartment.jpg" alt="Academic building reference" loading="lazy">
+   <div class="landmark-body">
+    <small>REFERENCE IMAGE ONLY</small>
+    <h3>03. Block 34 Entrance</h3>
+    <p>Replace this reference with the real Block 34 entrance facade for arrival confirmation.</p>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- QR CODE -->
+
+<section class="section reveal" id="qr">
+ <div class="section-head">
+  <small>05 / ZERO-INSTALL ACCESS</small>
+  <h2>Scan & Start Your Journey</h2>
+  <p>Generate a QR code for your published website so visitors can open the route guide directly from the Main Gate.</p>
+ </div>
+
+ <div class="qr-grid">
+  <div class="panel">
+   <h3>📱 Main Gate QR Guide</h3>
+   <p class="note">After publishing this website, generate its QR code and print it on your project demonstration board.</p>
+   <div class="qr-box">
+    <div id="qrcode">
+     <span class="note">Generate your website QR code below.</span>
+    </div>
+    <strong id="qrStatus">Website QR Code</strong>
+   </div>
+   <button class="btn blue full" style="margin-top:14px" onclick="generateQR()">Generate QR Code</button>
+   <button class="btn soft full" style="margin-top:9px" onclick="downloadQR()">Download QR Image</button>
+  </div>
+
+  <div class="panel">
+   <h3>Why our QR guide is useful</h3>
+   <div class="help-card" style="margin-top:17px">
+    <span class="emoji">⚡</span>
+    <h3>No App Installation</h3>
+    <p>Open the navigation guide directly in a mobile browser.</p>
+   </div>
+   <div class="help-card" style="margin-top:12px">
+    <span class="emoji">📸</span>
+    <h3>Landmark Photographs</h3>
+    <p>Recognise upcoming turns through real visual references.</p>
+   </div>
+   <div class="help-card" style="margin-top:12px">
+    <span class="emoji">📄</span>
+    <h3>Printed Fallback</h3>
+    <p>Provide a non-QR printed route summary for visitors without mobile data.</p>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- HELP -->
+
+<section class="section reveal" id="help">
+ <div class="section-head">
+  <small>06 / RE-ORIENTATION</small>
+  <h2>Still Lost? We've Got You.</h2>
+  <p>Simple tools to help visitors find their position and continue towards their destination.</p>
+ </div>
+
+ <div class="help-grid">
+  <div class="help-card">
+   <span class="emoji">📍</span>
+   <h3>Where Am I?</h3>
+   <p>Refresh your GPS location and check your position on the campus map.</p>
+   <button class="btn soft full" style="margin-top:15px" onclick="getSingleLocation()">Find Me</button>
+  </div>
+
+  <div class="help-card">
+   <span class="emoji">🗺️</span>
+   <h3>Full Directions</h3>
+   <p>Open external walking directions to the configured Block 34 destination.</p>
+   <button class="btn soft full" style="margin-top:15px" onclick="openGoogleMaps()">Open Maps</button>
+  </div>
+
+  <div class="help-card">
+   <span class="emoji">🔄</span>
+   <h3>Restart Route</h3>
+   <p>Start the landmark-based guide again from the Main Gate.</p>
+   <button class="btn soft full" style="margin-top:15px" onclick="resetRoute()">Restart</button>
+  </div>
+ </div>
+</section>
+
+<!-- ARRIVAL -->
+
+<section class="section reveal">
+ <div class="panel" style="text-align:center;padding:38px">
+  <div style="font-size:43px">🎯</div>
+  <h2 style="font-size:26px;margin:13px 0">Have You Reached Block 34?</h2>
+  <p class="note" style="margin:0 auto 20px;max-width:550px">
+   Verify the building number and entrance visually before confirming your arrival.
+  </p>
+  <button class="btn orange" onclick="confirmArrival()">✓ Confirm My Arrival</button>
+ </div>
+</section>
+
+<!-- FEEDBACK -->
+
+<section class="section reveal" id="feedback">
+ <div class="section-head">
+  <small>07 / USER EXPERIENCE</small>
+  <h2>Help Us Improve</h2>
+  <p>Your feedback helps us make the Block 34 navigation experience easier for first-time visitors.</p>
+ </div>
+
+ <div class="feedback-grid">
+  <div class="panel">
+   <h3 style="margin-bottom:17px">⭐ Rate Your Experience</h3>
+   <div class="rating" id="rating">
+    <button onclick="setRating(1)">★</button>
+    <button onclick="setRating(2)">★</button>
+    <button onclick="setRating(3)">★</button>
+    <button onclick="setRating(4)">★</button>
+    <button onclick="setRating(5)">★</button>
+   </div>
+
+   <div class="form-group">
+    <label>What did you like?</label>
+    <textarea id="feedbackText" placeholder="Share your experience or suggestions..."></textarea>
+   </div>
+   <button class="btn blue full" onclick="submitFeedback()">Submit Feedback</button>
+   <p class="note">Feedback is prepared in your email application; this prototype does not store submissions on a server.</p>
+  </div>
+
+  <div class="offline">
+   <h3>💡 Our Design Thinking Approach</h3>
+   <p class="note" style="margin-bottom:15px">
+    We designed this solution around the actual navigation challenges described in our INT335 project.
+   </p>
+   <p style="font-size:12px;line-height:2;color:#52627b">
+    <b>Empathize:</b> Understand first-time visitors.<br>
+    <b>Define:</b> Identify confusing junctions.<br>
+    <b>Ideate:</b> Explore landmark-led solutions.<br>
+    <b>Prototype:</b> Build a QR and photo route guide.<br>
+    <b>Test:</b> Improve through real user trials.
+   </p>
+   <hr style="border:0;border-top:1px solid #d6e0f2;margin:17px 0">
+   <h3>Our Mission</h3>
+   <p class="note">
+    Help every visitor reach Block 34 confidently without repeated stops to ask for directions.
+   </p>
+  </div>
+ </div>
+</section>
+
+<!-- PROJECT INFORMATION -->
+
+<section class="section reveal" id="about">
+ <div class="section-head">
+  <small>08 / PROJECT INFORMATION</small>
+  <h2>Built With Design Thinking</h2>
+  <p>A human-centred campus wayfinding prototype developed for the INT335 Design Thinking project.</p>
+ </div>
+
+ <div class="panel">
+  <div class="data-grid">
+   <div class="data"><small>PROJECT TITLE</small><strong>Which Block Is 34?</strong></div>
+   <div class="data"><small>PROJECT ID</small><strong>P10</strong></div>
+   <div class="data"><small>COURSE</small><strong>INT335 Design Thinking</strong></div>
+   <div class="data"><small>SECTION</small><strong>K2P26XB</strong></div>
+   <div class="data"><small>MENTOR</small><strong>Dr. Ruchi</strong></div>
+   <div class="data"><small>UNIVERSITY</small><strong>Lovely Professional University</strong></div>
+  </div>
+  <h3 style="margin:20px 0 14px">Our Team</h3>
+  <div class="data-grid">
+   <div class="data"><small>TEAM LEADER</small><strong>N. Mokshith Reddy</strong></div>
+   <div class="data"><small>RESEARCH & PROTOTYPE</small><strong>J. Surya Teja</strong></div>
+   <div class="data"><small>UX & DOCUMENTATION</small><strong>Shyamlal Sharma</strong></div>
+  </div>
+ </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+
+<footer>
+ <div class="footer-grid">
+  <div>
+   <h3>⌖ WHICH BLOCK IS 34?</h3>
+   <p>Making campus navigation simple through live location, real landmarks and human-centred design.</p>
+  </div>
+  <div>
+   <h3>Quick Links</h3>
+   <p><a href="#home">Home</a></p>
+   <p><a href="#location">Live Location</a></p>
+   <p><a href="#route">Navigation</a></p>
+   <p><a href="#gallery">Campus Gallery</a></p>
+  </div>
+  <div>
+   <h3>Project Details</h3>
+   <p>INT335 Design Thinking</p>
+   <p>Project P10</p>
+   <p>Section K2P26XB</p>
+   <p>Lovely Professional University</p>
+  </div>
+ </div>
+ <div class="footer-bottom">
+  <span>© 2026–27 Which Block Is 34? · Student Project Prototype</span>
+  <span>Designed with purpose. Built for people.</span>
+ </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<!-- LIBRARIES -->
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<script>
+
+// ======================================
+// 1. CONFIGURATION
+// ======================================
+
+// IMPORTANT:
+// These are provisional coordinates carried over
+// from the earlier prototype. Verify the exact
+// Block 34 entrance location on campus.
+
+const DESTINATION = {
+ lat:31.25162,
+ lng:75.70463,
+ name:"Block 34, LPU"
+};
+
+// Replace route steps with your team's
+// actual surveyed directions and photographs.
+
+const routeSteps = [
+ {
+  title:"Start at the Main Gate",
+  description:"Confirm that you are at the LPU Main Gate before beginning your journey towards Block 34.",
+  tip:"Check your current GPS position before starting."
+ },
+ {
+  title:"Walk Towards Landmark 1",
+  description:"Follow the verified pedestrian path towards the first campus landmark. Match the real landmark photograph before proceeding.",
+  tip:"Add your actual Junction 1 photograph and verified distance here."
+ },
+ {
+  title:"Follow the Junction Direction",
+  description:"At the verified internal junction, follow the left or right arrow shown on your actual route photograph.",
+  tip:"Clearly state whether the visitor must turn before or after the landmark."
+ },
+ {
+  title:"Approach Block 34",
+  description:"Continue along the verified path and look for the Block 34 building sign.",
+  tip:"Use a real daytime photograph of the building facade."
+ },
+ {
+  title:"Confirm Your Arrival",
+  description:"Match the building number and entrance with the final Block 34 reference photograph.",
+  tip:"Only confirm arrival after visually checking the entrance."
+ }
+];
+
+// ======================================
+// 2. MAP
+// ======================================
+
+const map = L.map("map").setView(
+ [DESTINATION.lat,DESTINATION.lng],17
+);
+
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+ attribution:"© OpenStreetMap contributors",
+ maxZoom:20
+}).addTo(map);
+
+const destinationMarker = L.marker([
+ DESTINATION.lat,DESTINATION.lng
+]).addTo(map);
+
+destinationMarker.bindPopup(
+ "<b>🏫 Block 34, LPU</b><br>Verify exact entrance coordinates."
+);
+
+let userMarker=null;
+let accuracyCircle=null;
+let currentLat=null;
+let currentLng=null;
+let watchId=null;
+
+// ======================================
+// 3. GPS LOCATION
+// ======================================
+
+function getSingleLocation(){
+ if(!navigator.geolocation){
+  showToast("Your browser does not support GPS.");
+  return;
+ }
+
+ if(!window.isSecureContext){
+  showToast("GPS requires HTTPS or localhost.");
+  return;
+ }
+
+ document.getElementById("gpsStatus").innerText="Detecting location...";
+ document.getElementById("gpsMessage").innerText="Please allow location permission.";
+
+ navigator.geolocation.getCurrentPosition(
+  updateLocation,
+  locationError,
+  {
+   enableHighAccuracy:true,
+   timeout:20000,
+   maximumAge:0
+  }
+ );
+}
+
+function startNavigation(){
+ startLiveTracking();
+}
+
+function startLiveTracking(){
+ if(!navigator.geolocation){
+  showToast("GPS is not supported by this browser.");
+  return;
+ }
+
+ if(!window.isSecureContext){
+  showToast("Open this website through HTTPS or localhost.");
+  return;
+ }
+
+ if(watchId!==null){
+  navigator.geolocation.clearWatch(watchId);
+ }
+
+ document.getElementById("gpsStatus").innerText="Starting live GPS...";
+ document.getElementById("gpsMessage").innerText="Waiting for your position.";
+
+ watchId=navigator.geolocation.watchPosition(
+  updateLocation,
+  locationError,
+  {
+   enableHighAccuracy:true,
+   maximumAge:2000,
+   timeout:20000
+  }
+ );
+
+ showToast("Live tracking requested.");
+}
+
+function updateLocation(position){
+ currentLat=position.coords.latitude;
+ currentLng=position.coords.longitude;
+
+ const accuracy=position.coords.accuracy;
+ const userPosition=[currentLat,currentLng];
+
+ document.getElementById("lat").innerText=currentLat.toFixed(6);
+ document.getElementById("lng").innerText=currentLng.toFixed(6);
+ document.getElementById("accuracy").innerText="±"+Math.round(accuracy)+" m";
+
+ document.getElementById("gpsStatus").innerText="GPS location detected";
+ document.getElementById("gpsMessage").innerText="Your coordinates have been updated.";
+ document.getElementById("gpsDot").classList.add("active");
+
+ if(!userMarker){
+  userMarker=L.marker(userPosition).addTo(map);
+  userMarker.bindPopup("📍 Your Current Location");
+ }else{
+  userMarker.setLatLng(userPosition);
+ }
+
+ if(!accuracyCircle){
+  accuracyCircle=L.circle(userPosition,{
+   radius:accuracy,
+   color:"#315eea",
+   fillOpacity:.10
+  }).addTo(map);
+ }else{
+  accuracyCircle.setLatLng(userPosition);
+  accuracyCircle.setRadius(accuracy);
+ }
+
+ const distance=calculateDistance(
+  currentLat,currentLng,
+  DESTINATION.lat,DESTINATION.lng
+ );
+
+ document.getElementById("distance").innerText=formatDistance(distance);
+
+ map.setView(userPosition,17);
+}
+
+function locationError(error){
+ let message="Could not detect your location.";
+
+ if(error.code===1){
+  message="Location permission denied. Allow GPS in browser settings.";
+ }else if(error.code===2){
+  message="GPS position unavailable. Try outdoors.";
+ }else if(error.code===3){
+  message="GPS timed out. Please try again.";
+ }
+
+ document.getElementById("gpsStatus").innerText="Location unavailable";
+ document.getElementById("gpsMessage").innerText=message;
+ document.getElementById("gpsDot").classList.remove("active");
+
+ showToast(message);
+}
+
+function stopTracking(){
+ if(watchId!==null){
+  navigator.geolocation.clearWatch(watchId);
+  watchId=null;
+  showToast("Live tracking stopped.");
+ }else{
+  showToast("Tracking is not active.");
+ }
+}
+
+// ======================================
+// 4. DISTANCE CALCULATION
+// ======================================
+
+function calculateDistance(lat1,lon1,lat2,lon2){
+ const R=6371000;
+ const rad=x=>x*Math.PI/180;
+
+ const dLat=rad(lat2-lat1);
+ const dLon=rad(lon2-lon1);
+
+ const a=
+  Math.sin(dLat/2)**2+
+  Math.cos(rad(lat1))*Math.cos(rad(lat2))*
+  Math.sin(dLon/2)**2;
+
+ return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+function formatDistance(distance){
+ return distance<1000
+  ?Math.round(distance)+" m"
+  :(distance/1000).toFixed(2)+" km";
+}
+
+// ======================================
+// 5. GOOGLE MAPS
+// ======================================
+
+function openGoogleMaps(){
+ const destination=DESTINATION.lat+","+DESTINATION.lng;
+
+ let url="https://www.google.com/maps/dir/?api=1";
+
+ if(currentLat!==null && currentLng!==null){
+  url+="&origin="+encodeURIComponent(currentLat+","+currentLng);
+ }
+
+ url+="&destination="+encodeURIComponent(destination);
+ url+="&travelmode=walking";
+
+ window.open(url,"_blank","noopener");
+}
+
+// ======================================
+// 6. ROUTE GUIDE
+// ======================================
+
+let currentStep=0;
+
+function showStep(){
+ const step=routeSteps[currentStep];
+
+ document.getElementById("stepLabel").innerText=
+  "STEP "+(currentStep+1)+" OF "+routeSteps.length;
+
+ document.getElementById("stepTitle").innerText=step.title;
+ document.getElementById("stepDescription").innerText=step.description;
+ document.getElementById("stepTip").innerText="💡 "+step.tip;
+
+ const percentage=(currentStep/(routeSteps.length-1))*100;
+
+ document.getElementById("progressFill").style.width=percentage+"%";
+ document.getElementById("progressText").innerText=
+  Math.round(percentage)+"% journey guide completed";
+}
+
+function nextStep(){
+ if(currentStep<routeSteps.length-1){
+  currentStep++;
+  showStep();
+ }else{
+  showToast("Final step reached. Verify the entrance.");
+ }
+}
+
+function previousStep(){
+ if(currentStep>0){
+  currentStep--;
+  showStep();
+ }
+}
+
+function resetRoute(){
+ currentStep=0;
+ showStep();
+ showToast("Route restarted.");
+}
+
+// ======================================
+// 7. ARRIVAL CONFIRMATION
+// ======================================
+
+function confirmArrival(){
+ if(currentLat===null){
+  showToast("Please detect your location first.");
+  return;
+ }
+
+ const distance=calculateDistance(
+  currentLat,currentLng,
+  DESTINATION.lat,DESTINATION.lng
+ );
+
+ if(distance<=40){
+  showToast("Near destination! Verify the Block 34 entrance visually.");
+ }else{
+  showToast("Approximately "+formatDistance(distance)+" from the configured destination marker.");
+ }
+}
+
+// ======================================
+// 8. COPY COORDINATES
+// ======================================
+
+function copyLocation(){
+ if(currentLat===null){
+  showToast("Detect your location first.");
+  return;
+ }
+
+ const value="Latitude: "+currentLat+"\nLongitude: "+currentLng;
+
+ navigator.clipboard.writeText(value)
+ .then(()=>showToast("Coordinates copied!"))
+ .catch(()=>showToast("Clipboard permission unavailable."));
+}
+
+// ======================================
+// 9. QR CODE
+// ======================================
+
+let qrGenerated=false;
+
+function generateQR(){
+ if(!window.QRCode){
+  showToast("QR library could not load. Check internet.");
+  return;
+ }
+
+ const url=window.location.href;
+
+ if(url.startsWith("file:")){
+  showToast("Publish the website first to create a shareable QR.");
+  return;
+ }
+
+ const target=document.getElementById("qrcode");
+ target.innerHTML="";
+
+ new QRCode(target,{
+  text:url,
+  width:180,
+  height:180,
+  colorDark:"#101b32",
+  colorLight:"#ffffff",
+  correctLevel:QRCode.CorrectLevel.H
+ });
+
+ document.getElementById("qrStatus").innerText="Scan to open this website";
+ qrGenerated=true;
+
+ showToast("Website QR generated!");
+}
+
+function downloadQR(){
+ if(!qrGenerated){
+  showToast("Generate the QR code first.");
+  return;
+ }
+
+ const target=document.querySelector("#qrcode canvas");
+
+ if(target){
+  const link=document.createElement("a");
+  link.download="which-block-is-34-qr.png";
+  link.href=target.toDataURL("image/png");
+  link.click();
+ }else{
+  showToast("QR image not available.");
+ }
+}
+
+// ======================================
+// 10. FEEDBACK
+// ======================================
+
+let selectedRating=0;
+
+function setRating(value){
+ selectedRating=value;
+
+ document.querySelectorAll("#rating button").forEach((button,index)=>{
+  button.classList.toggle("selected",index<value);
+ });
+}
+
+function submitFeedback(){
+ const feedback=document.getElementById("feedbackText").value.trim();
+
+ if(!selectedRating){
+  showToast("Please select a rating.");
+  return;
+ }
+
+ if(!feedback){
+  showToast("Please enter your feedback.");
+  return;
+ }
+
+ const subject=encodeURIComponent("Which Block Is 34? Website Feedback");
+
+ const body=encodeURIComponent(
+  "Experience rating: "+selectedRating+"/5\n\nFeedback:\n"+feedback
+ );
+
+ window.location.href="mailto:?subject="+subject+"&body="+body;
+}
+
+// ======================================
+// 11. MOBILE MENU
+// ======================================
+
+function toggleMenu(){
+ document.getElementById("nav").classList.toggle("open");
+}
+
+document.querySelectorAll("nav a").forEach(link=>{
+ link.addEventListener("click",()=>{
+  document.getElementById("nav").classList.remove("open");
+ });
+});
+
+// ======================================
+// 12. SCROLL ANIMATIONS
+// ======================================
+
+const observer=new IntersectionObserver(entries=>{
+ entries.forEach(entry=>{
+  if(entry.isIntersecting){
+   entry.target.classList.add("visible");
+   observer.unobserve(entry.target);
+  }
+ });
+},{threshold:.10});
+
+document.querySelectorAll(".reveal").forEach(element=>{
+ observer.observe(element);
+});
+
+// ======================================
+// 13. NOTIFICATIONS
+// ======================================
+
+let toastTimer;
+
+function showToast(message){
+ const toast=document.getElementById("toast");
+
+ toast.innerText=message;
+ toast.classList.add("show");
+
+ clearTimeout(toastTimer);
+
+ toastTimer=setTimeout(()=>{
+  toast.classList.remove("show");
+ },3500);
+}
+
+// ======================================
+// 14. STARTUP
+// ======================================
+
+showStep();
+
+</script>
+
+</body>
+</html>
